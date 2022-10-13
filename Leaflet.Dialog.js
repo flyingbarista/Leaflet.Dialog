@@ -6,16 +6,16 @@ import L from 'leaflet'
 L.Control.Dialog = L.Control.extend({
   options: {
     size: [300, 300],
-    minSize: [100, 100],
-    maxSize: [350, 350],
+    minSize: [50, 50],
+    maxSize: [900, 900],
     anchor: [250, 250],
     position: 'topleft',
     initOpen: true,
     title: null,
     iconClass: {
-      grabber: 'fa-solid fa-arrows-alt',
+      grabber: 'grabberclass',
       close: 'fa-solid fa-times',
-      resize: 'fa-solid fa-arrows-alt-h fa-rotate-45',
+      resize: 'resizeclass',
       collapse: 'fa-solid caret-down',
       expand: 'fa-solid caret-up'
     }
@@ -233,8 +233,13 @@ L.Control.Dialog = L.Control.extend({
     } else {
       grabberNode = (this._grabberNode = L.DomUtil.create('div', className + '-grabber'))
       const grabberIcon = L.DomUtil.create('i', this.options.iconClass.grabber)
-      grabberNode.appendChild(grabberIcon)
-    }
+      grabberNode.appendChild(grabberIcon);
+
+      /*
+      var elem = document.querySelector('.grabberclass');
+                elem.style.backgroundImage = "url('../img/grabber.png')";
+      */
+}
 
     L.DomEvent.on(grabberNode, 'mousedown', this._handleMoveStart, this)
     L.DomEvent.on(grabberNode, 'touchstart', this._handleTouchMoveStart, this)
@@ -330,8 +335,13 @@ L.Control.Dialog = L.Control.extend({
   },
 
   _handleTouchResizeStart: function (e) {
-    this._oldMousePos.x = e.clientX
-    this._oldMousePos.y = e.clientY
+    if(e.clientX == undefined){
+      this._oldMousePos.x = e.pageX
+      this._oldMousePos.y = e.pageY
+     } else {
+      this._oldMousePos.x = e.clientX
+      this._oldMousePos.y = e.clientY  
+     }
 
     L.DomEvent.on(this._resizerNode, 'touchmove', this._handleTouchResize, this)
     L.DomEvent.on(this._resizerNode, 'touchend', this._handleTouchResizeEnd, this)
@@ -352,8 +362,13 @@ L.Control.Dialog = L.Control.extend({
   },
 
   _handleTouchMoveStart: function (e) {
-    this._oldMousePos.x = e.clientX
-    this._oldMousePos.y = e.clientY
+    if(e.clientX == undefined){
+      this._oldMousePos.x = e.pageX
+      this._oldMousePos.y = e.pageY
+     } else {
+      this._oldMousePos.x = e.clientX
+      this._oldMousePos.y = e.clientY  
+     }
 
     L.DomEvent.on(this._grabberNode, 'touchmove', this._handleTouchMove, this)
     L.DomEvent.on(this._grabberNode, 'touchend', this._handleTouchMoveEnd, this)
@@ -384,17 +399,27 @@ L.Control.Dialog = L.Control.extend({
   },
 
   _handleTouchMove: function (e) {
-    const diffX = e.clientX - this._oldMousePos.x
-    const diffY = e.clientY - this._oldMousePos.y
-
-    this._move(diffX, diffY)
+    if(e.clientX == undefined){
+      const diffX = e.pageX - this._oldMousePos.x
+      const diffY = e.pageY - this._oldMousePos.y
+      this._move(diffX, diffY)
+     } else {
+      const diffX = e.clientX - this._oldMousePos.x
+      const diffY = e.clientY - this._oldMousePos.y
+      this._move(diffX, diffY)     
+     }
   },
 
   _handleTouchResize: function (e) {
-    const diffX = e.clientX - this._oldMousePos.x
-    const diffY = e.clientY - this._oldMousePos.y
-
-    this._resize(diffX, diffY)
+    if(e.clientX == undefined){
+      const diffX = e.pageX - this._oldMousePos.x
+      const diffY = e.pageY - this._oldMousePos.y
+      this._resize(diffX, diffY)
+     } else {
+      const diffX = e.clientX - this._oldMousePos.x
+      const diffY = e.clientY - this._oldMousePos.y
+      this._resize(diffX, diffY)     
+     }
   },
 
   _handleMouseUp: function () {
