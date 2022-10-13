@@ -234,7 +234,7 @@ L.Control.Dialog = L.Control.extend({
       grabberNode = (this._grabberNode = L.DomUtil.create('div', className + '-grabber'))
       const grabberIcon = L.DomUtil.create('i', this.options.iconClass.grabber)
       grabberNode.appendChild(grabberIcon)
-    }
+}
 
     L.DomEvent.on(grabberNode, 'mousedown', this._handleMoveStart, this)
     L.DomEvent.on(grabberNode, 'touchstart', this._handleTouchMoveStart, this)
@@ -330,8 +330,13 @@ L.Control.Dialog = L.Control.extend({
   },
 
   _handleTouchResizeStart: function (e) {
-    this._oldMousePos.x = e.clientX
-    this._oldMousePos.y = e.clientY
+    if(e.clientX == undefined){
+      this._oldMousePos.x = e.pageX
+      this._oldMousePos.y = e.pageY
+     } else {
+      this._oldMousePos.x = e.clientX
+      this._oldMousePos.y = e.clientY  
+     }
 
     L.DomEvent.on(this._resizerNode, 'touchmove', this._handleTouchResize, this)
     L.DomEvent.on(this._resizerNode, 'touchend', this._handleTouchResizeEnd, this)
@@ -352,8 +357,13 @@ L.Control.Dialog = L.Control.extend({
   },
 
   _handleTouchMoveStart: function (e) {
-    this._oldMousePos.x = e.clientX
-    this._oldMousePos.y = e.clientY
+    if(e.clientX == undefined){
+      this._oldMousePos.x = e.pageX
+      this._oldMousePos.y = e.pageY
+     } else {
+      this._oldMousePos.x = e.clientX
+      this._oldMousePos.y = e.clientY  
+     }
 
     L.DomEvent.on(this._grabberNode, 'touchmove', this._handleTouchMove, this)
     L.DomEvent.on(this._grabberNode, 'touchend', this._handleTouchMoveEnd, this)
@@ -384,17 +394,27 @@ L.Control.Dialog = L.Control.extend({
   },
 
   _handleTouchMove: function (e) {
-    const diffX = e.clientX - this._oldMousePos.x
-    const diffY = e.clientY - this._oldMousePos.y
-
-    this._move(diffX, diffY)
+    if(e.clientX == undefined){
+      const diffX = e.pageX - this._oldMousePos.x
+      const diffY = e.pageY - this._oldMousePos.y
+      this._move(diffX, diffY)
+     } else {
+      const diffX = e.clientX - this._oldMousePos.x
+      const diffY = e.clientY - this._oldMousePos.y
+      this._move(diffX, diffY)     
+     }
   },
 
   _handleTouchResize: function (e) {
-    const diffX = e.clientX - this._oldMousePos.x
-    const diffY = e.clientY - this._oldMousePos.y
-
-    this._resize(diffX, diffY)
+    if(e.clientX == undefined){
+      const diffX = e.pageX - this._oldMousePos.x
+      const diffY = e.pageY - this._oldMousePos.y
+      this._resize(diffX, diffY)
+     } else {
+      const diffX = e.clientX - this._oldMousePos.x
+      const diffY = e.clientY - this._oldMousePos.y
+      this._resize(diffX, diffY)     
+     }
   },
 
   _handleMouseUp: function () {
